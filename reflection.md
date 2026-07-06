@@ -4,8 +4,10 @@
 
 **a. Initial design**
 
-- Briefly describe your initial UML design.
-- What classes did you include, and what responsibilities did you assign to each?
+When I first mapped out the project, I focused on what a pet owner would actually need to accomplish during a typical day. I identified three core actions that would drive the design: keeping track of pet information, managing care tasks, and creating a daily plan that fits the owner's schedule. Those actions helped shape the rest of my UML diagram.
+
+To support those features, I planned separate classes with distinct responsibilities. The **Pet** class would store information about the pet, the **Task** class would represent care activities such as walks, meals, medication, or grooming, the **Owner** class would hold preferences and time availability, and the **Scheduler** class would be responsible for organizing tasks into a realistic daily plan based on priority and available time.
+
 
 **b. Design changes**
 

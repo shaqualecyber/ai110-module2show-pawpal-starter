@@ -1,15 +1,41 @@
 classDiagram
-    %% Replace the placeholders below with your actual classes, attributes, methods, and relationships.
-    %% Keep this file updated so it matches your final implementation.
-
-    class ClassName {
-        +type attribute
-        +method() returnType
+    class PetProfile {
+        +pet_name
+        +species
+        +age
+        +health_notes
+        +update_pet_info()
+        +view_pet_details()
     }
 
-    class AnotherClass {
-        +type attribute
-        +method() returnType
+    class OwnerProfile {
+        +owner_name
+        +available_minutes
+        +care_preferences
+        +update_availability()
+        +update_preferences()
     }
 
-    ClassName --> AnotherClass : relationship
+    class CareActivity {
+        +activity_name
+        +estimated_time
+        +priority_level
+        +completed
+        +edit_activity()
+        +complete_activity()
+    }
+
+    class SchedulePlanner {
+        +activity_list
+        +available_time
+        +daily_schedule
+        +build_schedule()
+        +prioritize_tasks()
+        +explain_schedule()
+    }
+
+    OwnerProfile --> PetProfile : has
+    SchedulePlanner --> CareActivity : uses
+    OwnerProfile --> SchedulePlanner : creates
+
+    note for SchedulePlanner "Creates daily_schedule from prioritized activities."
