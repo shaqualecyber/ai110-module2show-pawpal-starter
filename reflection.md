@@ -24,8 +24,7 @@ During the review of my class skeleton, I made a couple of small design improvem
 
 **b. Tradeoffs**
 
-- Describe one tradeoff your scheduler makes.
-- Why is that tradeoff reasonable for this scenario?
+One decision I made was to keep the conflict detection simple. Right now, it only checks if two tasks are scheduled for the exact same due date or time instead of looking for activities that overlap. I could have used a more advanced approach that groups activities or checks time ranges, which would be more efficient as the project grows. I decided to stick with the simpler version because it's easier to read, easier to follow, and fits the size of this project while still meeting the requirements.
 
 ---
 

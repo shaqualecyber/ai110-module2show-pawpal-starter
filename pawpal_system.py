@@ -83,7 +83,7 @@ class CareActivity:
             self.priority_level = priority_level
 
     def complete_activity(self):
-        """Mark the activity as completed and create the next occurrence if recurring."""
+        """Mark the activity as completed and create the next repeat if it is recurring."""
         self.completed = True
 
         if self.recurrence == "daily" and self.due_date is not None:
@@ -119,15 +119,15 @@ class SchedulePlanner:
         self.skipped_activities = []
 
     def sort_by_time(self):
-        """Sort activities by estimated time using Python's built-in sorted()."""
+        """Return activities ordered from shortest to longest estimated time."""
         return sorted(self.activity_list, key=lambda activity: activity.estimated_time)
 
     def filter_by_completion_status(self, completed=False):
-        """Return activities that match the requested completion status."""
+        """Return only the activities that match the chosen completed or pending status."""
         return [activity for activity in self.activity_list if activity.completed is completed]
 
     def detect_conflicts(self):
-        """Return simple warning messages for activities scheduled at the same time."""
+        """Return warning messages when two activities share the same due date and time."""
         warnings = []
         for index, activity in enumerate(self.activity_list):
             for other_activity in self.activity_list[index + 1:]:
