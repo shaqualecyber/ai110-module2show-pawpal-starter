@@ -1,7 +1,13 @@
 import streamlit as st
+from pawpal_system import PetProfile, CareActivity, OwnerProfile, SchedulePlanner
 
 st.set_page_config(page_title="PawPal+", page_icon="🐾", layout="centered")
-
+if "owner" not in st.session_state:
+    st.session_state.owner = OwnerProfile(
+        owner_name="Demo Owner",
+        available_minutes=90,
+        care_preferences="General pet care"
+    )
 st.title("🐾 PawPal+")
 
 st.markdown(
@@ -74,15 +80,32 @@ st.subheader("Build Schedule")
 st.caption("This button should call your scheduling logic once you implement it.")
 
 if st.button("Generate schedule"):
-    st.warning(
-        "Not implemented yet. Next step: create your scheduling logic (classes/functions) and call it here."
+    priority_map = {"low": 1, "medium": 2, "high": 3}
+
+    care_activities = [
+        CareActivity(
+            activity_name=task["title"],
+            estimated_time=task["duration_minutes"],
+            priority_level=priority_map[task["priority"]]
+        )
+        for task in st.session_state.tasks
+    ]
+
+    planner = SchedulePlanner(
+        activity_list=care_activities,
+        available_minutes=st.session_state.owner.available_minutes
     )
-    st.markdown(
-        """
-Suggested approach:
-1. Design your UML (draft).
-2. Create class stubs (no logic).
-3. Implement scheduling behavior.
-4. Connect your scheduler here and display results.
-"""
-    )
+
+    planner.build_schedule()
+
+    st.subheader("Today's Schedule")
+
+    if planner.daily_schedule:
+        for activity in planner.daily_schedule:
+            st.write(
+                f"- {activity.activity_name} ({activity.estimated_time} min, priority {activity.priority_level})"
+            )
+    else:
+        st.info("No activities were scheduled.")
+
+    st.text(planner.explain_schedule())
