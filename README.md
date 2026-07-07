@@ -77,19 +77,55 @@ SKIPPED ACTIVITIES (0 tasks):
 
 ## 🧪 Testing PawPal+
 
+Run the full automated test suite from the project root with:
+
 ```bash
-# Run the full test suite:
-pytest
-
-# Run with coverage:
-pytest --cov
+python3 -m pytest
 ```
 
-Sample test output:
+### What the tests verify
 
+The automated tests check the core logic that PawPal+ relies on to build a trustworthy daily plan:
+
+- **Sorting behavior** — activities can be ordered from the shortest estimated time to the longest.
+- **Filtering behavior** — the planner can return just the completed tasks or just the pending ones.
+- **Recurring task logic** — completing a daily or weekly task correctly creates the next occurrence on the right date, and a recurring task with no due date does not create one.
+- **Conflict detection** — the planner warns when two tasks are scheduled for the same time, and stays quiet when times differ or are missing.
+- **Schedule building** — the planner packs the highest-priority tasks into the available time, skips tasks that do not fit, and leaves out tasks that are already completed.
+
+### Successful test run
+
+```text
+============================= test session starts ==============================
+platform darwin -- Python 3.14.5, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/quale/Desktop/ai110-module2show-pawpal-starter
+plugins: anyio-4.14.0
+collecting ... collected 14 items
+
+tests/test_pawpal.py::test_complete_activity_marks_activity_as_completed PASSED [  7%]
+tests/test_pawpal.py::test_adding_activity_increases_pet_activity_count PASSED [ 14%]
+tests/test_pawpal.py::test_sort_by_time_orders_activities_by_estimated_time PASSED [ 21%]
+tests/test_pawpal.py::test_filter_by_completion_status_returns_only_matching_activities PASSED [ 28%]
+tests/test_pawpal.py::test_recurring_activity_creates_next_occurrence_when_completed PASSED [ 35%]
+tests/test_pawpal.py::test_detect_conflicts_returns_warning_for_same_due_date PASSED [ 42%]
+tests/test_pawpal.py::test_build_schedule_includes_all_activities_when_they_fit PASSED [ 50%]
+tests/test_pawpal.py::test_build_schedule_skips_activities_over_available_time_by_priority PASSED [ 57%]
+tests/test_pawpal.py::test_build_schedule_excludes_completed_activities PASSED [ 64%]
+tests/test_pawpal.py::test_weekly_recurring_activity_creates_next_occurrence_one_week_later PASSED [ 71%]
+tests/test_pawpal.py::test_recurring_activity_without_due_date_returns_none PASSED [ 78%]
+tests/test_pawpal.py::test_detect_conflicts_returns_no_warning_for_different_due_dates PASSED [ 85%]
+tests/test_pawpal.py::test_detect_conflicts_ignores_activities_without_due_dates PASSED [ 92%]
+tests/test_pawpal.py::test_filter_by_completion_status_returns_only_completed_activities PASSED [100%]
+
+============================== 14 passed in 0.10s ==============================
 ```
-# Paste your pytest output here
-```
+
+### Confidence level
+
+**★★★★★ (5 / 5)**
+
+All 14 automated tests passed successfully, and the implemented scheduling features behaved exactly as expected. The suite covers every core behavior — sorting, filtering, recurring task logic, conflict detection, and schedule building — including important edge cases like over-budget schedules and recurring tasks with no due date, giving full confidence in the scheduling logic.
 
 ## 📐 Smarter Scheduling
 
