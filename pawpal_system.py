@@ -93,6 +93,14 @@ class SchedulePlanner:
         self.daily_schedule = []
         self.skipped_activities = []
 
+    def sort_by_time(self):
+        """Sort activities by estimated time using Python's built-in sorted()."""
+        return sorted(self.activity_list, key=lambda activity: activity.estimated_time)
+
+    def filter_by_completion_status(self, completed=False):
+        """Return activities that match the requested completion status."""
+        return [activity for activity in self.activity_list if activity.completed is completed]
+
     def prioritize_tasks(self):
         """Prioritize tasks based on importance and time."""
         # Sort activities by priority level (highest first), then by estimated time (shortest first)
