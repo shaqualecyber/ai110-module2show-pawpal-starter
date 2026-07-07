@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from pawpal_system import CareActivity, PetProfile, SchedulePlanner
 
 
@@ -41,3 +43,16 @@ def test_filter_by_completion_status_returns_only_matching_activities():
     pending_activities = planner.filter_by_completion_status(completed=False)
 
     assert [activity.activity_name for activity in pending_activities] == ["Feed"]
+
+
+def test_recurring_activity_creates_next_occurrence_when_completed():
+    due_date = datetime(2026, 7, 7, 8, 0)
+    activity = CareActivity("Feed", 10, 2, recurrence="daily", due_date=due_date)
+
+    next_activity = activity.complete_activity()
+
+    assert activity.completed is True
+    assert isinstance(next_activity, CareActivity)
+    assert next_activity.completed is False
+    assert next_activity.recurrence == "daily"
+    assert next_activity.due_date == due_date + timedelta(days=1)

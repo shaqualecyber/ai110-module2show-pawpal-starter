@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 
 
 @dataclass
@@ -69,6 +70,8 @@ class CareActivity:
     estimated_time: int
     priority_level: int
     completed: bool = False
+    recurrence: str = "none"
+    due_date: datetime | None = None
 
     def edit_activity(self, activity_name=None, estimated_time=None, priority_level=None):
         """Edit the activity details."""
@@ -80,8 +83,30 @@ class CareActivity:
             self.priority_level = priority_level
 
     def complete_activity(self):
-        """Mark the activity as completed."""
+        """Mark the activity as completed and create the next occurrence if recurring."""
         self.completed = True
+
+        if self.recurrence == "daily" and self.due_date is not None:
+            return CareActivity(
+                activity_name=self.activity_name,
+                estimated_time=self.estimated_time,
+                priority_level=self.priority_level,
+                completed=False,
+                recurrence=self.recurrence,
+                due_date=self.due_date + timedelta(days=1),
+            )
+
+        if self.recurrence == "weekly" and self.due_date is not None:
+            return CareActivity(
+                activity_name=self.activity_name,
+                estimated_time=self.estimated_time,
+                priority_level=self.priority_level,
+                completed=False,
+                recurrence=self.recurrence,
+                due_date=self.due_date + timedelta(weeks=1),
+            )
+
+        return None
 
 
 class SchedulePlanner:

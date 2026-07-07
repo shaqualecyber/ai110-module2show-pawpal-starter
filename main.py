@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pawpal_system import PetProfile, CareActivity, OwnerProfile, SchedulePlanner
 
 
@@ -31,6 +33,21 @@ play = CareActivity("Play session", 25, 1)
 
 # Mark one task as completed to demonstrate filtering
 play.complete_activity()
+
+# Demonstrate recurring task behavior
+recurring_feed = CareActivity(
+    "Feed breakfast",
+    10,
+    2,
+    recurrence="daily",
+    due_date=datetime(2026, 7, 7, 8, 0),
+)
+next_occurrence = recurring_feed.complete_activity()
+
+print("\nRecurring task demo")
+print("=" * 20)
+print(f"Completed: {recurring_feed.activity_name} ({recurring_feed.due_date})")
+print(f"Next occurrence: {next_occurrence.activity_name} ({next_occurrence.due_date})")
 
 # Assign activities to pets
 milo.care_activities.extend([walk, feed])
