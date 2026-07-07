@@ -93,14 +93,13 @@ Sample test output:
 
 ## 📐 Smarter Scheduling
 
-> Fill in once you've implemented scheduling logic.
 
 | Feature | Method(s) | Notes |
 |---------|-----------|-------|
-| Task sorting | | e.g., by priority, duration |
-| Filtering | | e.g., skip tasks if time runs out |
-| Conflict handling | | e.g., overlapping time slots |
-| Recurring tasks | | e.g., daily vs. weekly |
+| Sorting behavior | `SchedulePlanner.sort_by_time()` | Orders care activities by their estimated time from shortest to longest. |
+| Filtering behavior | `SchedulePlanner.filter_by_completion_status()` | Returns only completed or pending activities based on the chosen status. |
+| Conflict detection logic | `SchedulePlanner.detect_conflicts()` | Warns when two activities share the same due date and time. |
+| Recurring task logic | `CareActivity.complete_activity()` | Marks an activity complete and creates the next daily or weekly occurrence when applicable. |
 
 ## 📸 Demo Walkthrough
 
