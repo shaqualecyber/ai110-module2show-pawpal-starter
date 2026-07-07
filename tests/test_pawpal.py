@@ -56,3 +56,14 @@ def test_recurring_activity_creates_next_occurrence_when_completed():
     assert next_activity.completed is False
     assert next_activity.recurrence == "daily"
     assert next_activity.due_date == due_date + timedelta(days=1)
+
+
+def test_detect_conflicts_returns_warning_for_same_due_date():
+    first_activity = CareActivity("Feed", 10, 2, due_date=datetime(2026, 7, 7, 8, 0))
+    second_activity = CareActivity("Walk", 15, 3, due_date=datetime(2026, 7, 7, 8, 0))
+    planner = SchedulePlanner([first_activity, second_activity], 60)
+
+    conflicts = planner.detect_conflicts()
+
+    assert len(conflicts) == 1
+    assert "same time" in conflicts[0].lower()

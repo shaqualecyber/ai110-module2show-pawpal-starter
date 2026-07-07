@@ -49,6 +49,22 @@ print("=" * 20)
 print(f"Completed: {recurring_feed.activity_name} ({recurring_feed.due_date})")
 print(f"Next occurrence: {next_occurrence.activity_name} ({next_occurrence.due_date})")
 
+# Demonstrate conflict detection
+medication.due_date = datetime(2026, 7, 7, 9, 0)
+conflicting_activity = CareActivity(
+    "Morning medication",
+    10,
+    4,
+    due_date=datetime(2026, 7, 7, 9, 0),
+)
+conflict_planner = SchedulePlanner([medication, conflicting_activity], owner.available_minutes)
+conflict_warnings = conflict_planner.detect_conflicts()
+
+print("\nConflict detection demo")
+print("=" * 20)
+for warning in conflict_warnings:
+    print(warning)
+
 # Assign activities to pets
 milo.care_activities.extend([walk, feed])
 luna.care_activities.extend([medication, play])

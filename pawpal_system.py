@@ -126,6 +126,18 @@ class SchedulePlanner:
         """Return activities that match the requested completion status."""
         return [activity for activity in self.activity_list if activity.completed is completed]
 
+    def detect_conflicts(self):
+        """Return simple warning messages for activities scheduled at the same time."""
+        warnings = []
+        for index, activity in enumerate(self.activity_list):
+            for other_activity in self.activity_list[index + 1:]:
+                if activity.due_date is not None and other_activity.due_date is not None:
+                    if activity.due_date == other_activity.due_date:
+                        warnings.append(
+                            f"Conflict: {activity.activity_name} and {other_activity.activity_name} are scheduled for the same time ({activity.due_date})."
+                        )
+        return warnings
+
     def prioritize_tasks(self):
         """Prioritize tasks based on importance and time."""
         # Sort activities by priority level (highest first), then by estimated time (shortest first)
