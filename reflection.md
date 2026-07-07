@@ -4,15 +4,14 @@
 
 **a. Initial design**
 
-When I first mapped out the project, I focused on what a pet owner would actually need to accomplish during a typical day. I identified three core actions that would drive the design: keeping track of pet information, managing care tasks, and creating a daily plan that fits the owner's schedule. Those actions helped shape the rest of my UML diagram.
+When I first mapped out the project, I focused on what a pet owner would actually need to accomplish during a typical day. I identified three core actions that would drive the design: keeping track of pet information, managing care activities, and creating a daily plan that fits the owner's schedule. Those actions guided my initial UML design.
 
-To support those features, I planned separate classes with distinct responsibilities. The **Pet** class would store information about the pet, the **Task** class would represent care activities such as walks, meals, medication, or grooming, the **Owner** class would hold preferences and time availability, and the **Scheduler** class would be responsible for organizing tasks into a realistic daily plan based on priority and available time.
+To support those features, I created four classes with separate responsibilities. The PetProfile class stores information about the pet, including details that could affect its daily care. The CareActivity class represents individual care activities, such as walks, meals, medication, grooming, or enrichment. The OwnerProfile class stores the owner's available time and care preferences so the schedule can be built around their routine. Finally, the SchedulePlanner class is responsible for organizing care activities into a daily schedule based on the owner's available time and the priority of each activity.
 
 
 **b. Design changes**
 
-- Did your design change during implementation?
-- If yes, describe at least one change and why you made it.
+During the review of my class skeleton, I made a couple of small design improvements based on AI feedback. I updated the naming so that both OwnerProfile and SchedulePlanner consistently use available_minutes, which makes the code easier to understand and keeps the naming consistent across the project. I also updated the activity_list type hint to specify that it stores CareActivity objects instead of using a generic list. I chose not to add additional object relationships at this stage because the assignment focused on creating class skeletons rather than implementing the application's behavior.
 
 ---
 
