@@ -12,6 +12,18 @@ A busy pet owner needs help staying consistent with pet care. They want an assis
 
 Your job is to design the system first (UML), then implement the logic in Python, then connect it to the Streamlit UI.
 
+## ✨ Features
+
+PawPal+ turns a list of pet care tasks into a realistic daily plan. Its capabilities include:
+
+- **Smart schedule generation** — automatically selects which tasks to include for the day based on the owner's available time, and reports anything that could not be fit in.
+- **Priority-based scheduling** — tasks are scheduled highest-priority first, so the most important care always makes it into the plan before lower-priority extras.
+- **Sorting by estimated time** — tasks can be viewed ordered from the shortest to the longest, making it easy to spot quick wins.
+- **Filtering completed and pending tasks** — separate completed work from what still needs doing, so the plan reflects only what's left.
+- **Conflict detection** — warns the owner when two tasks are scheduled for the same date and time.
+- **Daily and weekly recurring tasks** — completing a recurring task automatically creates its next occurrence one day or one week later.
+- **Schedule explanation** — produces a plain-language summary of what was included, the total time used, the time remaining, and what was skipped and why.
+
 ## What you will build
 
 Your final app should:
@@ -43,8 +55,6 @@ pip install -r requirements.txt
 7. Refine UML so it matches what you actually built.
 
 ## 🖥️ Sample Output
-
-## Sample Output
 
 ```text
 Today's Schedule
@@ -139,12 +149,86 @@ All 14 automated tests passed successfully, and the implemented scheduling featu
 
 ## 📸 Demo Walkthrough
 
-Describe your app in numbered steps so a reader can follow along without watching a video:
+The Streamlit app (`app.py`) is the interactive demo. Launch it with:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+```bash
+streamlit run app.py
+```
+
+### What you can do in the UI
+
+- Enter basic **owner and pet information** (owner name, pet name, species).
+- **Add care tasks**, each with a title, a duration in minutes, a priority (low / medium / high), a due time, and a "already completed?" flag.
+- Review every task you've added in a **live task table**.
+- Click **Generate schedule** to run the full scheduling engine and see the results.
+
+### Example workflow
+
+1. **Add owner and pet details.** Set the owner name to `Jordan` and the pet to `Mochi`, a dog.
+2. **Add a few tasks.** For example:
+   - *Give medication* — 15 min, high priority, due 09:00
+   - *Morning walk* — 20 min, medium priority, due 08:00
+   - *Feed breakfast* — 10 min, medium priority, due 08:00
+   - *Play session* — 25 min, low priority, marked as already completed
+3. **Confirm the task list.** Each task appears in the on-screen table so you can double-check it before scheduling.
+4. **Generate the schedule.** Click **Generate schedule** to run the planner against the owner's available time.
+5. **Read the results.** The app displays the chosen daily schedule, the same tasks sorted by time, a pending-vs-completed breakdown, and the plain-language schedule explanation.
+
+### Scheduler behaviors demonstrated
+
+- **Priority-based scheduling & smart selection** — *Give medication* (highest priority) is placed first, and lower-priority tasks fill in until the available time runs out.
+- **Sorting by time** — a "Sorted by Time" table lists tasks shortest-to-longest.
+- **Filtering** — the completed *Play session* is separated from the pending tasks in the pending-vs-completed view.
+- **Conflict warnings** — because *Morning walk* and *Feed breakfast* share the 08:00 slot, the app shows a conflict warning; when no times collide it reports success instead.
+- **Recurring tasks** — completing a daily or weekly task creates its next occurrence automatically (see the CLI demo below).
+
+### Sample CLI output
+
+The scheduling logic can also be run directly from the command line with `python3 main.py`, which prints a full demonstration of every behavior:
+
+```text
+Recurring task demo
+====================
+Completed: Feed breakfast (2026-07-07 08:00:00)
+Next occurrence: Feed breakfast (2026-07-08 08:00:00)
+
+Conflict detection demo
+====================
+Conflict: Give medication and Morning medication are scheduled for the same time (2026-07-07 09:00:00).
+Today's Schedule
+====================
+- Give medication (15 min, priority 4)
+- Morning walk (20 min, priority 3)
+- Feed breakfast (10 min, priority 2)
+
+Sorted by time:
+- Feed breakfast (10 min)
+- Give medication (15 min)
+- Morning walk (20 min)
+- Play session (25 min)
+
+Pending tasks:
+- Morning walk (20 min)
+- Feed breakfast (10 min)
+- Give medication (15 min)
+
+Daily Schedule Explanation
+Available Time: 90 minutes
+────────────────────────────────────────
+
+INCLUDED ACTIVITIES (3 tasks):
+1. Give medication
+   Time: 15 min | Priority: 4
+2. Morning walk
+   Time: 20 min | Priority: 3
+3. Feed breakfast
+   Time: 10 min | Priority: 2
+
+Total Time Used: 45 minutes
+Time Remaining: 45 minutes
+
+SKIPPED ACTIVITIES (1 tasks):
+1. Play session (already completed)
+```
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or link to a demo video here -->

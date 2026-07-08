@@ -1,0 +1,52 @@
+classDiagram
+    class PetProfile {
+        +pet_name
+        +species
+        +age
+        +health_notes
+        +care_activities
+        +update_pet_info()
+        +view_pet_details()
+    }
+
+    class OwnerProfile {
+        +owner_name
+        +available_minutes
+        +care_preferences
+        +pet_profiles
+        +add_pet()
+        +update_availability()
+        +update_preferences()
+        +get_all_care_activities()
+    }
+
+    class CareActivity {
+        +activity_name
+        +estimated_time
+        +priority_level
+        +completed
+        +recurrence
+        +due_date
+        +edit_activity()
+        +complete_activity()
+    }
+
+    class SchedulePlanner {
+        +activity_list
+        +available_minutes
+        +daily_schedule
+        +skipped_activities
+        +sort_by_time()
+        +filter_by_completion_status()
+        +detect_conflicts()
+        +prioritize_tasks()
+        +build_schedule()
+        +explain_schedule()
+    }
+
+    OwnerProfile "1" --> "*" PetProfile : has
+    PetProfile "1" --> "*" CareActivity : has
+    SchedulePlanner "1" --> "*" CareActivity : uses
+    OwnerProfile ..> SchedulePlanner : feeds activities and available time
+
+    note for SchedulePlanner "Builds daily_schedule from prioritized activities; overflow goes to skipped_activities."

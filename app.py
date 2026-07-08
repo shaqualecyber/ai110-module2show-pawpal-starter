@@ -1,3 +1,5 @@
+from datetime import datetime, date, time
+
 import streamlit as st
 from pawpal_system import PetProfile, CareActivity, OwnerProfile, SchedulePlanner
 
@@ -63,9 +65,21 @@ with col2:
 with col3:
     priority = st.selectbox("Priority", ["low", "medium", "high"], index=2)
 
+col4, col5 = st.columns(2)
+with col4:
+    due_time = st.time_input("Due time (used for conflict detection)", value=time(8, 0))
+with col5:
+    completed = st.checkbox("Already completed?")
+
 if st.button("Add task"):
     st.session_state.tasks.append(
-        {"title": task_title, "duration_minutes": int(duration), "priority": priority}
+        {
+            "title": task_title,
+            "duration_minutes": int(duration),
+            "priority": priority,
+            "due_time": due_time.strftime("%H:%M"),
+            "completed": completed,
+        }
     )
 
 if st.session_state.tasks:
@@ -79,6 +93,20 @@ st.divider()
 st.subheader("Build Schedule")
 st.caption("This button should call your scheduling logic once you implement it.")
 
+def activity_rows(activities):
+    """Turn CareActivity objects into rows for a clean table display."""
+    return [
+        {
+            "Task": activity.activity_name,
+            "Minutes": activity.estimated_time,
+            "Priority": activity.priority_level,
+            "Due time": activity.due_date.strftime("%H:%M") if activity.due_date else "—",
+            "Completed": "Yes" if activity.completed else "No",
+        }
+        for activity in activities
+    ]
+
+
 if st.button("Generate schedule"):
     priority_map = {"low": 1, "medium": 2, "high": 3}
 
@@ -86,7 +114,12 @@ if st.button("Generate schedule"):
         CareActivity(
             activity_name=task["title"],
             estimated_time=task["duration_minutes"],
-            priority_level=priority_map[task["priority"]]
+            priority_level=priority_map[task["priority"]],
+            completed=task.get("completed", False),
+            due_date=datetime.combine(
+                date.today(),
+                datetime.strptime(task["due_time"], "%H:%M").time(),
+            ) if task.get("due_time") else None,
         )
         for task in st.session_state.tasks
     ]
@@ -98,14 +131,48 @@ if st.button("Generate schedule"):
 
     planner.build_schedule()
 
-    st.subheader("Today's Schedule")
+    # 1. Conflict detection — warn if two tasks share the same due time.
+    conflicts = planner.detect_conflicts()
+    if conflicts:
+        for warning in conflicts:
+            st.warning(warning)
+    else:
+        st.success("No scheduling conflicts found.")
 
+    # 2. Today's schedule (what the planner chose to fit in the available time).
+    st.subheader("Today's Schedule")
     if planner.daily_schedule:
-        for activity in planner.daily_schedule:
-            st.write(
-                f"- {activity.activity_name} ({activity.estimated_time} min, priority {activity.priority_level})"
-            )
+        st.table(activity_rows(planner.daily_schedule))
     else:
         st.info("No activities were scheduled.")
 
+    if planner.skipped_activities:
+        st.caption(f"{len(planner.skipped_activities)} task(s) were skipped (out of time or already completed).")
+
+    # 3. All tasks sorted by estimated time (shortest first).
+    st.subheader("Sorted by Time")
+    st.table(activity_rows(planner.sort_by_time()))
+
+    # 4. Filter by completion status.
+    st.subheader("Pending vs. Completed")
+    pending = planner.filter_by_completion_status(completed=False)
+    done = planner.filter_by_completion_status(completed=True)
+
+    st.info(f"Pending tasks: {len(pending)} · Completed tasks: {len(done)}")
+
+    col_pending, col_done = st.columns(2)
+    with col_pending:
+        st.markdown("**Pending**")
+        if pending:
+            st.table(activity_rows(pending))
+        else:
+            st.caption("No pending tasks.")
+    with col_done:
+        st.markdown("**Completed**")
+        if done:
+            st.table(activity_rows(done))
+        else:
+            st.caption("No completed tasks.")
+
+    st.subheader("Why this schedule?")
     st.text(planner.explain_schedule())
